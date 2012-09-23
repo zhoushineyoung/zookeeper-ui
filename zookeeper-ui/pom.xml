@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ro.tatacalu.zookeeper-ui</groupId>
     <artifactId>zookeeper-ui</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>ZooKeeper UI</name>
     <description>Web UI for Apache ZooKeeper using PrimeFaces.</description>
@@ -153,7 +153,6 @@
         <connection>scm:git:ssh://github.com/tatacalu/zookeeper-ui.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tatacalu/zookeeper-ui.git</developerConnection>
         <url>https://github.com/tatacalu/zookeeper-ui</url>
-      <tag>zookeeper-ui-0.0.1</tag>
   </scm>
     
 </project>
