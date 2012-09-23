@@ -14,6 +14,7 @@
         <version.primefaces>3.4</version.primefaces>
         
         <version.maven.tomcat.plugin>2.0</version.maven.tomcat.plugin>
+        <maven.release.plugin.version>2.3.2</maven.release.plugin.version>
     </properties>
     
     <repositories>
@@ -93,6 +94,13 @@
 		          <artifactId>tomcat7-maven-plugin</artifactId>
 		          <version>${version.maven.tomcat.plugin}</version>
 		        </plugin>
+		        
+		        <plugin>
+		          <groupId>org.apache.maven.plugins</groupId>
+		          <artifactId>maven-release-plugin</artifactId>
+		          <version>${maven.release.plugin.version}</version>
+		        </plugin>
+		        
             </plugins>
         </pluginManagement>
         
@@ -112,5 +120,12 @@
         </plugins>
         
     </build>
+    
+    <!-- SCM: GitHub -->
+    <scm>
+        <connection>scm:git:git://github.com7tatacalu/zookeeper-ui.git</connection>
+        <developerConnection>scm:git:git://github.com/tatacalu7zookeeper-ui.git</developerConnection>
+        <url>https://github.com/tatacalu/zookeeper-ui</url>
+    </scm>
     
 </project>
