@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ro.tatacalu.zookeeper-ui</groupId>
     <artifactId>zookeeper-ui</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>ZooKeeper UI</name>
     <description>Web UI for Apache ZooKeeper using PrimeFaces.</description>
@@ -16,6 +16,7 @@
         <version.maven.tomcat.plugin>2.0</version.maven.tomcat.plugin>
         <version.maven.release.plugin>2.3.2</version.maven.release.plugin>
         <version.maven.war.plugin>2.2</version.maven.war.plugin>
+        <version.maven.scm.plugin>1.8</version.maven.scm.plugin>
     </properties>
     
     <repositories>
@@ -133,8 +134,16 @@
                   <failOnMissingWebXml>true</failOnMissingWebXml>
                   <webXml>${basedir}${file.separator}src${file.separator}main${file.separator}webapp${file.separator}WEB-INF${file.separator}web.xml</webXml>
                 </configuration>
-              </plugin>
+            </plugin>
             
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>${version.maven.scm.plugin}</version>
+                <configuration>
+                    <pushChanges>false</pushChanges>
+                </configuration>
+            </plugin>
         </plugins>
         
     </build>
@@ -144,7 +153,6 @@
         <connection>scm:git:ssh://github.com/tatacalu/zookeeper-ui.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tatacalu/zookeeper-ui.git</developerConnection>
         <url>https://github.com/tatacalu/zookeeper-ui</url>
-      <tag>zookeeper-ui-0.0.1</tag>
-  </scm>
+    </scm>
     
 </project>
