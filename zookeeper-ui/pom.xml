@@ -141,8 +141,8 @@
     
     <!-- SCM: GitHub -->
     <scm>
-        <connection>scm:git:git://github.com/tatacalu/zookeeper-ui.git</connection>
-        <developerConnection>scm:git:git://github.com/tatacalu/zookeeper-ui.git</developerConnection>
+        <connection>scm:git:ssh://github.com/tatacalu/zookeeper-ui.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/tatacalu/zookeeper-ui.git</developerConnection>
         <url>https://github.com/tatacalu/zookeeper-ui</url>
     </scm>
     
