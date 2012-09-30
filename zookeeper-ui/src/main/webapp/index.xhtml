@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+  <title>JSF Demo</title>
+</h:head>
+<h:body>
+  <h:outputScript name="jsf.js" library="javax.faces" target="body">
+</h:outputScript>
+  <h1>Ajax JSF 2 Demo</h1>
+  <h:form>
+
+    <h:inputText id="name" value="#{helloWorldBean.name}">
+      <f:ajax render="reverseName"/>
+    </h:inputText>
+
+    <h:commandButton value="Say reverse Hi via Ajax">
+      <f:ajax execute="name" render="reverseName"/>
+    </h:commandButton>
+    <h:outputText id="reverseName" value="#{helloWorldBean.reverseName}"/>
+  </h:form>
+
+</h:body>
+</html>

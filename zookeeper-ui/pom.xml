@@ -10,8 +10,11 @@
     
     <properties>
         <version.curator>1.1.18</version.curator>
+        <version.spring.framework>3.1.2.RELEASE</version.spring.framework>
         <version.jsf.mojarra>2.1.13</version.jsf.mojarra>
+        <version.jstl>1.2</version.jstl>
         <version.primefaces>3.4</version.primefaces>
+        <version.servlet.api>2.5</version.servlet.api>
         
         <version.maven.tomcat.plugin>2.0</version.maven.tomcat.plugin>
         <version.maven.release.plugin>2.3.2</version.maven.release.plugin>
@@ -26,19 +29,36 @@
             <url>http://repository.primefaces.org</url>  
             <layout>default</layout>  
         </repository>
+        
+        <repository>
+            <id>springsource-repo</id>
+            <name>SpringSource Repository</name>
+            <url>http://repo.springsource.org/release</url>
+        </repository>
     </repositories>
-    
-    
     
     <dependencyManagement>
         <dependencies>
             
+            <!-- START Spring Framework Dependencies -->
             <dependency>
-                <groupId>com.netflix.curator</groupId>
-                <artifactId>curator-framework</artifactId>
-                <version>${version.curator}</version>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${version.spring.framework}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${version.spring.framework}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${version.spring.framework}</version>
+            </dependency>
+            <!--  END  Spring Framework Dependencies -->
             
+            <!-- START JSF Dependencies -->
             <dependency>
                 <groupId>com.sun.faces</groupId>
                 <artifactId>jsf-api</artifactId>
@@ -52,20 +72,51 @@
             </dependency>
             
             <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${version.jstl}</version>
+            </dependency>
+            
+            <dependency>
                 <groupId>org.primefaces</groupId>
                 <artifactId>primefaces</artifactId>
                 <version>${version.primefaces}</version>
+            </dependency>
+            <!--  END  JSF Dependencies -->
+            
+            <dependency>
+                <groupId>com.netflix.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${version.curator}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${version.servlet.api}</version>
             </dependency>
             
         </dependencies>
     </dependencyManagement>
     
     <dependencies>
-        <dependency>
-            <groupId>com.netflix.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-        </dependency>
         
+        <!-- START Spring Framework Dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <!--  END  Spring Framework Dependencies -->
+        
+        <!-- START JSF Dependencies -->
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-api</artifactId>
@@ -77,8 +128,24 @@
         </dependency>
         
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        
+        <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
+        </dependency>
+        <!--  END  JSF Dependencies -->
+        
+        <dependency>
+            <groupId>com.netflix.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
         </dependency>
     </dependencies>
     
