@@ -14,7 +14,7 @@
         <version.jsf.mojarra>2.1.13</version.jsf.mojarra>
         <version.jstl>1.2</version.jstl>
         <version.primefaces>3.4</version.primefaces>
-        <version.servlet.api>2.5</version.servlet.api>
+        <version.servlet.api>3.0.1</version.servlet.api>
         
         <version.maven.tomcat.plugin>2.0</version.maven.tomcat.plugin>
         <version.maven.release.plugin>2.3.2</version.maven.release.plugin>
@@ -92,7 +92,7 @@
             
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
+                <artifactId>javax.servlet-api</artifactId>
                 <version>${version.servlet.api}</version>
             </dependency>
             
@@ -145,7 +145,8 @@
         
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     
