@@ -18,6 +18,8 @@
         <version.jstl>1.2</version.jstl>
         <version.primefaces>3.4.1</version.primefaces>
         <version.servlet.api>3.0.1</version.servlet.api>
+        <version.slf4j>1.7.2</version.slf4j>
+        <version.logback>1.0.7</version.logback>
         
         <version.maven.tomcat.plugin>2.0</version.maven.tomcat.plugin>
         <version.maven.release.plugin>2.3.2</version.maven.release.plugin>
@@ -43,11 +45,37 @@
     <dependencyManagement>
         <dependencies>
             
+            <!-- START Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${version.logback}</version>
+            </dependency>
+            <!--  END  Logging -->
+            
             <!-- START Spring Framework Dependencies -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
                 <version>${version.spring.framework}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -91,6 +119,17 @@
                 <groupId>com.netflix.curator</groupId>
                 <artifactId>curator-framework</artifactId>
                 <version>${version.curator}</version>
+                <exclusions>
+	                <exclusion>
+	                    <groupId>org.slf4j</groupId>
+	                    <artifactId>slf4j-log4j12</artifactId>
+	                </exclusion>
+	                
+	                <exclusion>
+	                   <groupId>log4j</groupId>
+	                   <artifactId>log4j</artifactId>
+	                </exclusion>
+	            </exclusions>
             </dependency>
             
             <dependency>
@@ -103,7 +142,18 @@
     </dependencyManagement>
     
     <dependencies>
-        
+        <!-- START Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+            </dependency>
+            <!--  END  Logging -->
+            
         <!-- START Spring Framework Dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
