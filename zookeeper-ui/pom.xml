@@ -25,6 +25,8 @@
         <version.maven.release.plugin>2.3.2</version.maven.release.plugin>
         <version.maven.war.plugin>2.3</version.maven.war.plugin>
         <version.maven.scm.plugin>1.8</version.maven.scm.plugin>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
     <repositories>
