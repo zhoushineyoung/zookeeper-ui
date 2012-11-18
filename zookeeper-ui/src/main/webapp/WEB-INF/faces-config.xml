@@ -9,6 +9,19 @@
     <application>
         <!-- Spring Framework EL Resolver -->
         <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+        
+        <!-- START I18N -->
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>fr</supported-locale>
+        </locale-config>
+        
+        <resource-bundle>
+            <base-name>messages.messages</base-name>
+            <var>messages</var>
+        </resource-bundle>
+        <!--  END  I18N -->
+        
     </application> 
     
 </faces-config>
