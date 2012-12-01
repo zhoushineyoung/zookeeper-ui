@@ -91,6 +91,12 @@
             </dependency>
             <!--  END  Spring Framework Dependencies -->
             
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>jsr250-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+            
             <!-- START JSF Dependencies -->
             <dependency>
                 <groupId>com.sun.faces</groupId>
@@ -170,6 +176,11 @@
             <artifactId>spring-web</artifactId>
         </dependency>
         <!--  END  Spring Framework Dependencies -->
+        
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+        </dependency>
         
         <!-- START JSF Dependencies -->
         <dependency>

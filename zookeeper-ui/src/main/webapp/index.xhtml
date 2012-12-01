@@ -18,5 +18,10 @@
     <h:panelGroup>
         <h:outputText value="#{messages['splashPage.welcomeText']}" />
     </h:panelGroup>
+    <h:panelGroup>
+        <ui:repeat var="#{splashPageBean.children}" value="child">
+            <h:outputText value="#{child}" /><br />
+        </ui:repeat>
+    </h:panelGroup>
 </h:body>
 </html>
