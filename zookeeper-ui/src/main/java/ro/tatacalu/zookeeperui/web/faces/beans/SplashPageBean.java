@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import ro.tatacalu.zookeeperui.web.dtos.ZooKeeperInstanceDTO;
+
+import com.netflix.curator.CuratorZookeeperClient;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.framework.CuratorFrameworkFactory.Builder;
@@ -33,6 +36,8 @@ public class SplashPageBean implements Serializable {
 	private static final long serialVersionUID = -9205351459549012011L;
 	
 	private static final String CONNECT_STRING_LOCALHOST = "127.0.0.1:2181";
+	
+	private List<ZooKeeperInstanceDTO> instances;
 	
 	
 	/**
@@ -53,19 +58,21 @@ public class SplashPageBean implements Serializable {
 		
 		this.instances.add(localZkInstance);
 	}
-	@PostConstruct
-	public void init() {
-		Builder builder = CuratorFrameworkFactory.builder();
-		CuratorFramework curatorFramework = builder.connectString(CONNECT_STRING_LOCALHOST).build();
-		CuratorZookeeperClient curatorZookeeperClient = curatorFramework.getZookeeperClient();
-			LOGGER.debug("Children: {}", this.children);
-		} catch (Exception e1) {
-			LOGGER.error("Error trying to get the children list", e1);
-		}
-	}
-	public List<String> getChildren() {
-		return children;
-	}
-	}
+//	@PostConstruct
+//	public void init() {
+//		Builder builder = CuratorFrameworkFactory.builder();
+//		CuratorFramework curatorFramework = builder.connectString(CONNECT_STRING_LOCALHOST).build();
+//		CuratorZookeeperClient curatorZookeeperClient = curatorFramework.getZookeeperClient();
+//			LOGGER.debug("Children: {}", this.children);
+//		} catch (Exception e1) {
+//			LOGGER.error("Error trying to get the children list", e1);
+//		}
+//	}
+//	public List<String> getChildren() {
+//		return children;
+//	}
+//	}
+
+	
 	
 }
