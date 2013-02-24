@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 
 <h:head>
     <title>
@@ -15,13 +16,34 @@
     <h1>
         <h:outputText value="#{messages['splashPage.tile']}" />
     </h1>
-    <h:panelGroup>
+    <h:panelGroup layout="block">
         <h:outputText value="#{messages['splashPage.welcomeText']}" />
     </h:panelGroup>
-    <h:panelGroup>
-        <ui:repeat var="#{splashPageBean.children}" value="child">
-            <h:outputText value="#{child}" /><br />
-        </ui:repeat>
+    
+        <h:outputText value="#{messages['splashPage.instanceListDataTable.title']}" />
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Hostname" />
+                </f:facet>
+                <h:outputText value="#{currentZkInstance.host}" />
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                <h:outputText value="#{currentZkInstance.port}" />
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Name" />
+                </f:facet>
+                <h:outputText value="#{currentZkInstance.name}" />
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Description" />
+                </f:facet>
+                <h:outputText value="#{currentZkInstance.description}" />
+            </p:column>
+        </p:dataTable>
     </h:panelGroup>
 </h:body>
 </html>
