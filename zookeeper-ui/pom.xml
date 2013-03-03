@@ -23,9 +23,9 @@
         <version.logback>1.0.9</version.logback>
         
         <version.maven.tomcat.plugin>2.1</version.maven.tomcat.plugin>
-        <version.maven.release.plugin>2.3.2</version.maven.release.plugin>
+        <version.maven.release.plugin>2.4</version.maven.release.plugin>
         <version.maven.war.plugin>2.3</version.maven.war.plugin>
-        <version.maven.scm.plugin>1.8</version.maven.scm.plugin>
+        <version.maven.scm.plugin>1.8.1</version.maven.scm.plugin>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

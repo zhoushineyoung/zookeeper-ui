@@ -14,7 +14,7 @@
     
     <!-- Configures a handler that uses the JSF ResourceHandler API introduced in JSF 2 to serve web 
          application and classpath resources such as images, CSS and JavaScript files from well-known locations. -->
-    <faces:resources />
+    <faces:resources order="0" />
     
     <!-- Maps request paths to flows in the flowRegistry; e.g. a path of /hotels/booking looks for a flow with id "hotels/booking" -->
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
@@ -25,11 +25,6 @@
             <bean class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
         </property>
     </bean>
-    
-    
-    
-    
-    
     
     <!-- Deploys a flow executor. A FlowExecutor executes flow definitions and acts as the entry-point into the 
          Web Flow system. A flow executor launches new flow executions and resumes paused flow 
@@ -66,18 +61,6 @@
     <bean class="org.springframework.faces.webflow.JsfFlowHandlerAdapter">
         <property name="flowExecutor" ref="flowExecutor" />
     </bean>
-    
-    <!-- <bean id="defaultServletHttpRequestHandler" class="org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler" />
-    
-    <bean id="simpleUrlHandlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="urlMap">
-            <map>
-                <entry key="/resources/**" value-ref="defaultServletHttpRequestHandler" />
-            </map>
-        </property>
-    </bean>
-    
-    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter" /> -->
     
     <mvc:annotation-driven />
     
