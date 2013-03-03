@@ -3,18 +3,24 @@
  */
 package ro.tatacalu.zookeeperui.web.faces.beans;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+
+import ro.tatacalu.zookeeperui.web.dtos.ZNodeDTO;
 
 import com.netflix.curator.framework.CuratorFramework;
 
@@ -23,7 +29,7 @@ import com.netflix.curator.framework.CuratorFramework;
  *
  */
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(WebApplicationContext.SCOPE_SESSION)
 public class FirstStateBean {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FirstStateBean.class);
@@ -32,6 +38,8 @@ public class FirstStateBean {
 	private CuratorFramework curatorFramework;
 	
 	private TreeNode rootTreeNode;
+	
+	private Map<String, TreeNode> pathToNodeMap;
 	
 	/**
 	 * 
@@ -42,15 +50,19 @@ public class FirstStateBean {
 	
 	@PostConstruct
 	public void postConstruct() {
-		LOGGER.debug("PostConstruct START 3");
+		LOGGER.debug("PostConstruct START");
 		
 		try {
-			List<String> rootChildren = curatorFramework.getChildren().forPath("/");
+			this.pathToNodeMap = new HashMap<String, TreeNode>();
 			
-			this.rootTreeNode = new DefaultTreeNode("/", null);
+			this.rootTreeNode = this.readZookeeperRootNode();
+			this.rootTreeNode = this.getTreeNodeChildren(this.rootTreeNode, "/");
 			
-			for (String currentChild: rootChildren) {
-				TreeNode currentNode = new DefaultTreeNode("ZNode", currentChild, this.rootTreeNode);
+			LOGGER.debug("this.rootTreeNode={}", this.rootTreeNode);
+			
+			List<TreeNode> rootChildren = this.rootTreeNode.getChildren(); 
+			for (TreeNode child: rootChildren) {
+				this.getTreeNodeChildren(child, ((ZNodeDTO) child.getData()).getPath());
 			}
 			
 			LOGGER.debug("ROOT Children: {}", rootChildren);
@@ -59,6 +71,79 @@ public class FirstStateBean {
 		}
 		
 		LOGGER.debug("PostConstruct END");
+	}
+	
+	public void onNodeExpand(NodeExpandEvent nodeExpandEvent) throws Exception {
+		
+		TreeNode originatingTreeNode = nodeExpandEvent.getTreeNode();
+		
+		ZNodeDTO originatingZNodeDTO = (ZNodeDTO) originatingTreeNode.getData();
+		int childCount = originatingTreeNode.getChildCount();
+		LOGGER.debug("onNodeExpand: originatingZNodeDTO={}, child count: {}", originatingZNodeDTO, childCount);
+		
+		if (childCount > 0) {
+			
+			List<TreeNode> children = originatingTreeNode.getChildren();
+			for (TreeNode currentChild : children) {
+				
+				ZNodeDTO currentChildZNodeDTO = (ZNodeDTO) currentChild.getData();
+				
+				LOGGER.debug("onNodeExpand: originatingZNodeDTO={}, childDTO={}", originatingZNodeDTO, currentChildZNodeDTO);
+				
+				this.getTreeNodeChildren(currentChild, currentChildZNodeDTO.getPath());
+			}
+		}
+	}
+	
+	public List<ZNodeDTO> getChildren(String path) throws Exception {
+		
+		List<ZNodeDTO> ret = new ArrayList<ZNodeDTO>();
+		
+		List<String> rootChildren = this.curatorFramework.getChildren().forPath(path);
+		for (String currentChild: rootChildren) {
+			StringBuilder sb = new StringBuilder(path);
+			if (!(path.equals("/"))) {
+				sb.append("/");
+			}
+			sb.append(currentChild);
+			ZNodeDTO zNodeDTO = new ZNodeDTO(currentChild, sb.toString());
+			ret.add(zNodeDTO);
+		}
+		
+		return ret;
+	}
+	
+	public TreeNode getTreeNodeChildren(TreeNode parent, String parentPath) throws Exception {
+		
+		LOGGER.debug("getTreeNodeChildren START: parent={}, parentPath={}", parent, parentPath);
+		
+		List<ZNodeDTO> children = this.getChildren(parentPath);
+		
+		// remove all the children
+		if (parent.getChildCount() > 0) {
+			List <TreeNode> treeNodeChildren = parent.getChildren();
+			for (TreeNode treeNodeChild : treeNodeChildren) {
+				treeNodeChildren.remove(treeNodeChild);
+			}
+		}
+		
+		LOGGER.debug("getTreeNodeChildren children.size()={}", children.size());
+		
+		if (children.size() > 0) {
+			
+			for (ZNodeDTO currentChildDTO : children) {
+				new DefaultTreeNode("ZNode", currentChildDTO, parent);
+			}
+		}
+		
+		LOGGER.debug("getTreeNodeChildren END: parent={}, parentPath={}", parent, parentPath);
+		
+		return parent;
+	}
+	
+	public TreeNode readZookeeperRootNode() {
+		
+		return new DefaultTreeNode("ZNode", new ZNodeDTO("/","/"), null);
 	}
 	
 	public TreeNode getRootTreeNode() {

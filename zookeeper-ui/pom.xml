@@ -21,6 +21,7 @@
         <version.servlet.api>3.0.1</version.servlet.api>
         <version.slf4j>1.7.2</version.slf4j>
         <version.logback>1.0.9</version.logback>
+        <version.apache.commons.lang3>3.1</version.apache.commons.lang3>
         
         <version.maven.tomcat.plugin>2.1</version.maven.tomcat.plugin>
         <version.maven.release.plugin>2.4</version.maven.release.plugin>
@@ -163,6 +164,12 @@
                 <version>${version.servlet.api}</version>
             </dependency>
             
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${version.apache.commons.lang3}</version>
+            </dependency>
+            
         </dependencies>
     </dependencyManagement>
     
@@ -239,6 +246,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
     
