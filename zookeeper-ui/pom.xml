@@ -7,6 +7,8 @@
     <name>ZooKeeper UI</name>
     <description>Web UI for Apache ZooKeeper using PrimeFaces.</description>
     
+    <!-- Jenkins poll test -->
+    
     <prerequisites>
         <maven>3.0</maven>
     </prerequisites>
