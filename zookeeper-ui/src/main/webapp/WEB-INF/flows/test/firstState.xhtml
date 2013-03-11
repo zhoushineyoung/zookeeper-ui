@@ -7,14 +7,13 @@
       xmlns:p="http://primefaces.org/ui">
     
 <h:head>
-    <title>
-        <h:outputText value="#{messages['splashPage.htmlTitle']}" />
-    </title>
+    <title><h:outputText value="#{messages['splashPage.htmlTitle']}" /></title>
+    <h:outputStylesheet library="css" name="zookeeper-ui.css" />
 </h:head>
 
 <h:body>
     <h1>Zookeeper Structure</h1>
-    <h:form>
+    <h:form id="mainForm">
         <p:treeTable value="#{firstStateBean.rootTreeNode}" var="currentTreeNode" selectionMode="single" selection="">
             
             <p:ajax event="expand" listener="#{firstStateBean.onNodeExpand}" update="@this" />
