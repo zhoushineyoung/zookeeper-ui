@@ -12,25 +12,84 @@
 </h:head>
 
 <h:body>
-    <h1>Zookeeper Structure</h1>
-    <h:form id="mainForm">
-        <p:treeTable id="zkNodesTreeTable" value="#{firstStateBean.rootTreeNode}" var="currentTreeNode"
-            selectionMode="single" selection="#{firstStateBean.selectedTreeNode}">
-            
-            <p:ajax event="expand" listener="#{firstStateBean.onNodeExpand}" update="@this" />
-            <p:ajax event="collapse" listener="#{firstStateBean.onNodeCollapse}" update="@this" />
-            <p:ajax event="select" listener="#{firstStateBean.onNodeSelect}" update="@this" />
-            <p:ajax event="unselect" listener="#{firstStateBean.onNodeUnselect}" update="@this" />
-            
-            
-            <p:column>
-                <f:facet name="header">Name</f:facet>
-                <h:outputText value="#{currentTreeNode.name}" />
-            </p:column>
-            
-        </p:treeTable>
+    <p:layout fullPage="true">
+        <p:layoutUnit position="north">
+            <h1>Zookeeper Structure</h1>
+        </p:layoutUnit>
         
-        <p:blockUI block="zkNodesTreeTable" trigger="zkNodesTreeTable" />
-    </h:form>
+        <p:layoutUnit position="west" size="300" resizable="true">
+            <h:form id="mainForm">
+                <p:treeTable id="zkNodesTreeTable" value="#{firstStateBean.rootTreeNode}" var="currentTreeNode"
+                    selectionMode="single" selection="#{firstStateBean.selectedTreeNode}">
+                    
+                    <p:ajax event="expand" listener="#{firstStateBean.onNodeExpand}" update="@this" />
+                    <p:ajax event="collapse" listener="#{firstStateBean.onNodeCollapse}" update="@this" />
+                    <p:ajax event="select" listener="#{firstStateBean.onNodeSelect}" update="@this, :centerForm" />
+                    <p:ajax event="unselect" listener="#{firstStateBean.onNodeUnselect}" update="@this" />
+                    
+                    <p:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{currentTreeNode.name}" />
+                    </p:column>
+                    
+                </p:treeTable>
+                <p:blockUI block="zkNodesTreeTable" trigger="zkNodesTreeTable" />
+            </h:form>
+        </p:layoutUnit>
+        
+        <p:layoutUnit id="centerLayoutUnit" position="center">
+            <h:form id="centerForm">
+                
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h:outputText value="ZNode details" />
+                    </f:facet>
+                    
+                    <h:outputLabel for="currentZNodeData" value="Data: " />
+                    <p:inputTextarea id="currentZNodeData" cols="60" rows="4" value="#{firstStateBean.currentZNodeData}" />
+                    
+                    <h:outputText value="CZXID: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.czxid}" />
+                    
+                    <h:outputText value="MZXID: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.mzxid}" />
+                    
+                    <h:outputText value="CTime: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.ctime}" />
+                    
+                    <h:outputText value="MTime: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.mtime}" />
+                    
+                    <h:outputText value="Version: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.version}" />
+                    
+                    <h:outputText value="CVersion: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.cversion}" />
+                    
+                    <h:outputText value="AVersion: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.aversion}" />
+                    
+                    <h:outputText value="Ephemeral Owner: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.ephemeralOwner}" />
+                    
+                    <h:outputText value="Data length: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.dataLength}" />
+                    
+                    <h:outputText value="Children nr: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.numChildren}" />
+                    
+                    <h:outputText value="PZXID: " />
+                    <h:outputText value="#{firstStateBean.currentZNodeStat.pzxid}" />
+                    
+                    <f:facet name="footer">
+                        <p:commandButton id="saveZNodeDataCommandButton" value="Update" icon="ui-icon-check"
+                             actionListener="#{firstStateBean.saveSelectedNodeData}" update="@form" />
+                    </f:facet>
+                </p:panelGrid>
+                
+                <p:blockUI block=":centerForm" trigger="saveZNodeDataCommandButton" />
+            </h:form>
+        </p:layoutUnit>
+    </p:layout>
 </h:body>
 </html>

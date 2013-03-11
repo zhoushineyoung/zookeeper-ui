@@ -4,6 +4,7 @@
 package ro.tatacalu.zookeeperui.web.faces.beans;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Stat;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
@@ -24,8 +28,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import ro.tatacalu.zookeeperui.web.dtos.ZNodeDTO;
+import ro.tatacalu.zookeeperui.web.dtos.ZNodeStatDTO;
 
 import com.netflix.curator.framework.CuratorFramework;
+import com.netflix.curator.framework.api.transaction.CuratorTransactionResult;
 
 /**
  * @author Matei
@@ -43,6 +49,9 @@ public class FirstStateBean {
 	private TreeNode rootTreeNode;
 	
 	private TreeNode selectedTreeNode;
+	
+	private String currentZNodeData;
+	private ZNodeStatDTO currentZNodeStat;
 	
 	private Map<String, TreeNode> pathToNodeMap;
 	
@@ -131,7 +140,16 @@ public class FirstStateBean {
 	 * @throws Exception
 	 */
 	public void onNodeSelect(NodeSelectEvent nodeSelectEvent) throws Exception {
-		LOGGER.debug("onNodeSelect: ZNodeDTO={}", (ZNodeDTO)(nodeSelectEvent.getTreeNode().getData()));
+		
+		ZNodeDTO selectedZNodeDTO = (ZNodeDTO)(nodeSelectEvent.getTreeNode().getData());
+		
+		LOGGER.debug("onNodeSelect: ZNodeDTO={}", selectedZNodeDTO);
+		this.currentZNodeData = this.getZNodeDataString(selectedZNodeDTO);
+		
+		// read the Stat
+		Stat stat = this.curatorFramework.checkExists().forPath(selectedZNodeDTO.getPath());
+		this.currentZNodeStat = new ZNodeStatDTO(stat);
+		LOGGER.debug("Stat: {}", currentZNodeStat);
 	}
 	
 	/**
@@ -190,6 +208,82 @@ public class FirstStateBean {
 		return new DefaultTreeNode("ZNode", new ZNodeDTO("/","/"), null);
 	}
 	
+	private ZNodeStatDTO updateZNodeData(ZNodeDTO zNodeDTO, String data) {
+		LOGGER.debug("updateZNodeData: zNodeDTO={}, data={}", zNodeDTO, data);
+		
+		ZNodeStatDTO ret = null;
+		
+		try {
+			Collection<CuratorTransactionResult> results = this.curatorFramework
+				.inTransaction()
+				.setData().forPath(zNodeDTO.getPath(), data.getBytes())
+				.and()
+				.commit();
+			
+			if (results.size() == NumberUtils.INTEGER_ONE) {
+				CuratorTransactionResult curatorTransactionResult = results.iterator().next();
+				
+				ret = new ZNodeStatDTO(curatorTransactionResult.getResultStat());
+				
+				LOGGER.debug("Transaction result: forPath={}, resultPath={}, resultStat={}, resultType={}", 
+						curatorTransactionResult.getForPath(),
+						curatorTransactionResult.getResultPath(),
+						ret,
+						curatorTransactionResult.getType());
+			} else {
+				LOGGER.error("Multiple CuratorTransactionResult objects returned by the setData operation!");
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error trying to update the znode", e);
+		}
+		
+		return ret;
+	}
+	
+	public void saveSelectedNodeData() {
+		ZNodeDTO zNodeDTO = this.getSelectedZNodeDTO();
+		
+		LOGGER.debug("saveSelectedNodeData: selectedDTO=", zNodeDTO);
+		
+		this.currentZNodeStat = this.updateZNodeData(zNodeDTO, this.currentZNodeData);
+	}
+	
+	private String getZNodeDataString(ZNodeDTO zNodeDTO) {
+		
+		LOGGER.debug("getZNodeDataString: zNodeDTO={}", zNodeDTO);
+		
+		String ret = null;
+		
+		try {
+			byte[] data = this.curatorFramework.getData().forPath(zNodeDTO.getPath());
+			ret = new String(data);
+			
+			List<ACL> aclList = this.curatorFramework.getACL().forPath(zNodeDTO.getPath());
+			for (ACL acl : aclList) {
+				LOGGER.debug("ACL: {}", acl);
+			}
+			
+			LOGGER.debug("DATA: byte array: {}; String: {}", data, ret);
+		} catch (Exception e) {
+			LOGGER.error ("Error while retrieving data: {}", zNodeDTO, e);
+		}
+		
+		return ret;
+	}
+	
+	private ZNodeDTO getSelectedZNodeDTO() {
+		
+		ZNodeDTO ret = null;
+		if (this.selectedTreeNode != null) {
+			Object data = this.selectedTreeNode.getData();
+			if (data != null) {
+				ret = (ZNodeDTO) data;
+			}
+		}
+		
+		return ret;
+	}
+	
 	public TreeNode getRootTreeNode() {
 		return rootTreeNode;
 	}
@@ -206,5 +300,19 @@ public class FirstStateBean {
 	 */
 	public void setSelectedTreeNode(TreeNode selectedTreeNode) {
 		this.selectedTreeNode = selectedTreeNode;
+	}
+
+	/**
+	 * @return the currentZNodeData
+	 */
+	public String getCurrentZNodeData() {
+		return currentZNodeData;
+	}
+
+	/**
+	 * @return the currentZNodeStatDTO
+	 */
+	public ZNodeStatDTO getCurrentZNodeStat() {
+		return currentZNodeStat;
 	}
 }
