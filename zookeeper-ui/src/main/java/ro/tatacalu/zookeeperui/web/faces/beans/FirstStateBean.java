@@ -169,12 +169,7 @@ public class FirstStateBean {
 		List<ZNodeDTO> children = this.getChildren(parentPath);
 		
 		// remove all the children
-		if (parent.getChildCount() > 0) {
-			List <TreeNode> treeNodeChildren = parent.getChildren();
-			for (TreeNode treeNodeChild : treeNodeChildren) {
-				treeNodeChildren.remove(treeNodeChild);
-			}
-		}
+		parent .getChildren().clear();
 		
 		LOGGER.debug("getTreeNodeChildren children.size()={}", children.size());
 		

@@ -14,7 +14,7 @@
 <h:body>
     <h1>Zookeeper Structure</h1>
     <h:form id="mainForm">
-        <p:treeTable value="#{firstStateBean.rootTreeNode}" var="currentTreeNode"
+        <p:treeTable id="zkNodesTreeTable" value="#{firstStateBean.rootTreeNode}" var="currentTreeNode"
             selectionMode="single" selection="#{firstStateBean.selectedTreeNode}">
             
             <p:ajax event="expand" listener="#{firstStateBean.onNodeExpand}" update="@this" />
@@ -29,6 +29,8 @@
             </p:column>
             
         </p:treeTable>
+        
+        <p:blockUI block="zkNodesTreeTable" trigger="zkNodesTreeTable" />
     </h:form>
 </h:body>
 </html>
