@@ -28,6 +28,12 @@
         <param-value>1</param-value>
     </context-param>
     
+    <!-- Set the PrimeFaces Theme -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
+    
     <!-- Spring Context Loader Listener -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -20,6 +20,7 @@
         <version.jsf.mojarra>2.1.14</version.jsf.mojarra>
         <version.jstl>1.2</version.jstl>
         <version.primefaces>3.5</version.primefaces>
+        <version.primefaces.themes>1.0.9</version.primefaces.themes>
         <version.servlet.api>3.0.1</version.servlet.api>
         <version.slf4j>1.7.2</version.slf4j>
         <version.logback>1.0.9</version.logback>
@@ -141,6 +142,12 @@
                 <artifactId>primefaces</artifactId>
                 <version>${version.primefaces}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.primefaces.themes</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>${version.primefaces.themes}</version>
+            </dependency>
             <!--  END  JSF Dependencies -->
             
             <dependency>
@@ -210,7 +217,6 @@
             <artifactId>spring-faces</artifactId>
         </dependency>
         <!--  END  Spring Framework Dependencies -->
-        <!--  END  Spring Framework Dependencies -->
         
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -236,6 +242,11 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>bootstrap</artifactId>
         </dependency>
         <!--  END  JSF Dependencies -->
         
