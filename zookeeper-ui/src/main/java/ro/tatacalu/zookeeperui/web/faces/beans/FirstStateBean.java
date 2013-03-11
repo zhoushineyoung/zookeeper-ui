@@ -11,7 +11,10 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -38,6 +41,8 @@ public class FirstStateBean {
 	private CuratorFramework curatorFramework;
 	
 	private TreeNode rootTreeNode;
+	
+	private TreeNode selectedTreeNode;
 	
 	private Map<String, TreeNode> pathToNodeMap;
 	
@@ -79,7 +84,7 @@ public class FirstStateBean {
 		
 		ZNodeDTO originatingZNodeDTO = (ZNodeDTO) originatingTreeNode.getData();
 		int childCount = originatingTreeNode.getChildCount();
-		LOGGER.debug("onNodeExpand: originatingZNodeDTO={}, child count: {}", originatingZNodeDTO, childCount);
+		LOGGER.debug("onNodeExpand: ZNodeDTO={}, child count: {}", originatingZNodeDTO, childCount);
 		
 		if (childCount > 0) {
 			
@@ -93,6 +98,18 @@ public class FirstStateBean {
 				this.getTreeNodeChildren(currentChild, currentChildZNodeDTO.getPath());
 			}
 		}
+	}
+	
+	public void onNodeCollapse(NodeCollapseEvent nodeCollapseEvent) throws Exception {
+		LOGGER.debug("onNodeCollapse: ZNodeDTO={}", (ZNodeDTO)(nodeCollapseEvent.getTreeNode().getData()));
+	}
+	
+	public void onNodeSelect(NodeSelectEvent nodeSelectEvent) throws Exception {
+		LOGGER.debug("onNodeSelect: ZNodeDTO={}", (ZNodeDTO)(nodeSelectEvent.getTreeNode().getData()));
+	}
+	
+	public void onNodeUnselect(NodeUnselectEvent nodeUnselectEvent) throws Exception {
+		LOGGER.debug("onNodeUnselect: ZNodeDTO={}", (ZNodeDTO)(nodeUnselectEvent.getTreeNode().getData()));
 	}
 	
 	public List<ZNodeDTO> getChildren(String path) throws Exception {
@@ -148,5 +165,19 @@ public class FirstStateBean {
 	
 	public TreeNode getRootTreeNode() {
 		return rootTreeNode;
+	}
+
+	/**
+	 * @return the selectedTreeNode
+	 */
+	public TreeNode getSelectedTreeNode() {
+		return selectedTreeNode;
+	}
+
+	/**
+	 * @param selectedTreeNode the selectedTreeNode to set
+	 */
+	public void setSelectedTreeNode(TreeNode selectedTreeNode) {
+		this.selectedTreeNode = selectedTreeNode;
 	}
 }
