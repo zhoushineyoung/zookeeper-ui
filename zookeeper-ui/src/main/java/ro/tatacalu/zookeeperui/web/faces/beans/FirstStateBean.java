@@ -78,9 +78,18 @@ public class FirstStateBean {
 		LOGGER.debug("PostConstruct END");
 	}
 	
+	/**
+	 * Trigger executed when a TreeNode is expanded.
+	 * 
+	 * @param nodeExpandEvent
+	 * @throws Exception
+	 */
 	public void onNodeExpand(NodeExpandEvent nodeExpandEvent) throws Exception {
 		
 		TreeNode originatingTreeNode = nodeExpandEvent.getTreeNode();
+		if (!(originatingTreeNode.isExpanded())) {
+			originatingTreeNode.setExpanded(Boolean.TRUE);
+		}
 		
 		ZNodeDTO originatingZNodeDTO = (ZNodeDTO) originatingTreeNode.getData();
 		int childCount = originatingTreeNode.getChildCount();
@@ -100,14 +109,37 @@ public class FirstStateBean {
 		}
 	}
 	
+	/**
+	 * Trigger executed when a TreeNode is collapse.
+	 * 
+	 * @param nodeCollapseEvent
+	 * @throws Exception
+	 */
 	public void onNodeCollapse(NodeCollapseEvent nodeCollapseEvent) throws Exception {
 		LOGGER.debug("onNodeCollapse: ZNodeDTO={}", (ZNodeDTO)(nodeCollapseEvent.getTreeNode().getData()));
+		
+		TreeNode originatingTreeNode = nodeCollapseEvent.getTreeNode();
+		if (originatingTreeNode.isExpanded()) {
+			nodeCollapseEvent.getTreeNode().setExpanded(Boolean.FALSE);
+		}
 	}
 	
+	/**
+	 * Trigger executed when a TreeNode is selected.
+	 * 
+	 * @param nodeSelectEvent
+	 * @throws Exception
+	 */
 	public void onNodeSelect(NodeSelectEvent nodeSelectEvent) throws Exception {
 		LOGGER.debug("onNodeSelect: ZNodeDTO={}", (ZNodeDTO)(nodeSelectEvent.getTreeNode().getData()));
 	}
 	
+	/**
+	 * Trigger executed when a TreeNode is unselected.
+	 * 
+	 * @param nodeUnselectEvent
+	 * @throws Exception
+	 */
 	public void onNodeUnselect(NodeUnselectEvent nodeUnselectEvent) throws Exception {
 		LOGGER.debug("onNodeUnselect: ZNodeDTO={}", (ZNodeDTO)(nodeUnselectEvent.getTreeNode().getData()));
 	}
