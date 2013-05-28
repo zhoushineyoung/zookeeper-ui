@@ -3,15 +3,19 @@
  */
 package ro.tatacalu.zookeeperui.web.faces.beans;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.CharSetUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
@@ -27,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import ro.tatacalu.zookeeperui.web.dtos.CharsetDTO;
 import ro.tatacalu.zookeeperui.web.dtos.ZNodeDTO;
 import ro.tatacalu.zookeeperui.web.dtos.ZNodeStatDTO;
 
@@ -52,8 +57,16 @@ public class FirstStateBean {
 	
 	private String currentZNodeData;
 	private ZNodeStatDTO currentZNodeStat;
+	private String newZNodeName;
+	private String newZNodeDataString;
 	
 	private Map<String, TreeNode> pathToNodeMap;
+	
+	private List<CharsetDTO> availableCharsets;
+	
+	private String defaultCharsetString;
+	
+	private String selectedCharsetString;
 	
 	/**
 	 * 
@@ -67,6 +80,18 @@ public class FirstStateBean {
 		LOGGER.debug("PostConstruct START");
 		
 		try {
+			
+			this.availableCharsets = new ArrayList<>();
+			
+			SortedMap<String, Charset> availableCharsetsMap = Charset.availableCharsets(); 
+			for (Map.Entry<String, Charset> entry : availableCharsetsMap.entrySet()) {
+				CharsetDTO newCharsetDTO = new CharsetDTO(entry.getValue().name(), entry.getValue().displayName());
+				this.availableCharsets.add(newCharsetDTO);
+			}
+			
+			this.setDefaultCharsetString(Charset.defaultCharset().name());
+			this.setSelectedCharsetString(this.getDefaultCharsetString());
+			
 			this.pathToNodeMap = new HashMap<String, TreeNode>();
 			
 			this.rootTreeNode = this.readZookeeperRootNode();
@@ -180,6 +205,11 @@ public class FirstStateBean {
 		return ret;
 	}
 	
+	public void loadSelectedZNodeData() {
+		LOGGER.debug("loadSelectedZNodeData()");
+		this.currentZNodeData = this.getZNodeDataString(this.getSelectedZNodeDTO());  
+	}
+	
 	public TreeNode getTreeNodeChildren(TreeNode parent, String parentPath) throws Exception {
 		
 		LOGGER.debug("getTreeNodeChildren START: parent={}, parentPath={}", parent, parentPath);
@@ -256,19 +286,67 @@ public class FirstStateBean {
 		
 		try {
 			byte[] data = this.curatorFramework.getData().forPath(zNodeDTO.getPath());
-			ret = new String(data);
+			ret = new String(data, this.getSelectedCharset());
 			
-			List<ACL> aclList = this.curatorFramework.getACL().forPath(zNodeDTO.getPath());
-			for (ACL acl : aclList) {
-				LOGGER.debug("ACL: {}", acl);
-			}
-			
-			LOGGER.debug("DATA: byte array: {}; String: {}", data, ret);
+//			List<ACL> aclList = this.curatorFramework.getACL().forPath(zNodeDTO.getPath());
+//			for (ACL acl : aclList) {
+//				LOGGER.debug("ACL: {}", acl);
+//			}
+//			
+//			LOGGER.debug("DATA: byte array: {}; String: {}", data, ret);
 		} catch (Exception e) {
 			LOGGER.error ("Error while retrieving data: {}", zNodeDTO, e);
 		}
 		
 		return ret;
+	}
+	
+	
+	
+	public void createNewNode() {
+		
+		ZNodeDTO selectedZNodeDTO = this.getSelectedZNodeDTO();
+		
+		LOGGER.debug("createNewNode: Parent={}, New ZNode name={}, Data={}", selectedZNodeDTO, this.newZNodeName, 
+				this.newZNodeDataString);
+		
+		try {
+			
+			// TODO Refactoring
+			String parentNodePath = this.getSelectedZNodeDTO().getPath();
+			StringBuilder builder = new StringBuilder(parentNodePath);
+			
+			if (!(parentNodePath.equals("/"))) {
+				builder.append("/");
+			}
+			
+			builder.append(this.newZNodeName);
+			
+			String newZNodePath = builder.toString();
+			Charset charset = this.getSelectedCharset();
+			
+			LOGGER.debug("New ZNode path: {}; Charset: {}", newZNodePath, charset);
+			
+			Collection<CuratorTransactionResult> results = this.curatorFramework.inTransaction().create()
+				.forPath(newZNodePath, this.newZNodeDataString.getBytes(charset))
+				.and()
+				.commit();
+			
+			for (CuratorTransactionResult curatorTransactionResult : results) {
+				LOGGER.debug("Transaction result: forPath={}, resultPath={}, resultStat={}, resultType={}", 
+						curatorTransactionResult.getForPath(),
+						curatorTransactionResult.getResultPath(),
+						curatorTransactionResult.getResultStat(),
+						curatorTransactionResult.getType());
+			}
+			
+			// clean up
+			this.newZNodeName = null;
+			this.newZNodeDataString = null;
+		} catch (Exception e) {
+			LOGGER.error("An error has occured while trying to create a new node", e);
+		}
+		
 	}
 	
 	private ZNodeDTO getSelectedZNodeDTO() {
@@ -279,6 +357,16 @@ public class FirstStateBean {
 			if (data != null) {
 				ret = (ZNodeDTO) data;
 			}
+		}
+		
+		return ret;
+	}
+	
+	private Charset getSelectedCharset() {
+		Charset ret = null;
+		
+		if (this.selectedCharsetString != null) {
+			ret = Charset.forName(this.selectedCharsetString); 
 		}
 		
 		return ret;
@@ -314,5 +402,75 @@ public class FirstStateBean {
 	 */
 	public ZNodeStatDTO getCurrentZNodeStat() {
 		return currentZNodeStat;
+	}
+
+	/**
+	 * @return the newZNodeName
+	 */
+	public String getNewZNodeName() {
+		return newZNodeName;
+	}
+
+	/**
+	 * @param newZNodeName the newZNodeName to set
+	 */
+	public void setNewZNodeName(String newZNodeName) {
+		this.newZNodeName = newZNodeName;
+	}
+
+	/**
+	 * @return the newZNodeDataString
+	 */
+	public String getNewZNodeDataString() {
+		return newZNodeDataString;
+	}
+
+	/**
+	 * @param newZNodeDataString the newZNodeDataString to set
+	 */
+	public void setNewZNodeDataString(String newZNodeDataString) {
+		this.newZNodeDataString = newZNodeDataString;
+	}
+
+	/**
+	 * @return the availableCharsets
+	 */
+	public List<CharsetDTO> getAvailableCharsets() {
+		return availableCharsets;
+	}
+
+	/**
+	 * @param availableCharsets the availableCharsets to set
+	 */
+	public void setAvailableCharsets(List<CharsetDTO> availableCharsets) {
+		this.availableCharsets = availableCharsets;
+	}
+
+	/**
+	 * @return the defaultCharsetString
+	 */
+	public String getDefaultCharsetString() {
+		return defaultCharsetString;
+	}
+
+	/**
+	 * @param defaultCharsetString the defaultCharsetString to set
+	 */
+	public void setDefaultCharsetString(String defaultCharsetString) {
+		this.defaultCharsetString = defaultCharsetString;
+	}
+
+	/**
+	 * @return the selectedCharsetString
+	 */
+	public String getSelectedCharsetString() {
+		return selectedCharsetString;
+	}
+
+	/**
+	 * @param selectedCharsetString the selectedCharsetString to set
+	 */
+	public void setSelectedCharsetString(String selectedCharsetString) {
+		this.selectedCharsetString = selectedCharsetString;
 	}
 }

@@ -19,7 +19,7 @@
         
         <p:layoutUnit position="west" size="300" resizable="true">
             <h:form id="mainForm">
-                <p:treeTable id="zkNodesTreeTable" value="#{firstStateBean.rootTreeNode}" var="currentTreeNode"
+                <p:treeTable id="zkNodesTreeTable" widgetVar="zkNodesTreeTable" value="#{firstStateBean.rootTreeNode}" var="currentTreeNode"
                     selectionMode="single" selection="#{firstStateBean.selectedTreeNode}">
                     
                     <p:ajax event="expand" listener="#{firstStateBean.onNodeExpand}" update="@this" />
@@ -33,6 +33,11 @@
                     </p:column>
                     
                 </p:treeTable>
+                
+                <p:contextMenu for="zkNodesTreeTable" nodeType="ZNode">
+                    <p:menuitem value="New child ZNode" onclick="newZNodeDialog.show()" />
+                </p:contextMenu>
+                
                 <p:blockUI block="zkNodesTreeTable" trigger="zkNodesTreeTable" />
             </h:form>
         </p:layoutUnit>
@@ -47,6 +52,14 @@
                     
                     <h:outputLabel for="currentZNodeData" value="Data: " />
                     <p:inputTextarea id="currentZNodeData" cols="60" rows="4" value="#{firstStateBean.currentZNodeData}" />
+                    
+                    <!-- TODO when creating a new node refresh this section -->
+                    <p:outputLabel for="currentZNodeDataCharset" value="Data Charset: " />
+                    <p:selectOneMenu  id="currentZNodeDataCharset" value="#{firstStateBean.selectedCharsetString}">
+                        <f:selectItems value="#{firstStateBean.availableCharsets}" var="currentCharsetDTO"
+                            itemLabel="#{currentCharsetDTO.displayName}" itemValue="#{currentCharsetDTO.name}" />
+                        <p:ajax event="change" update="currentZNodeData" listener="#{firstStateBean.loadSelectedZNodeData}" />
+                    </p:selectOneMenu>
                     
                     <h:outputText value="CZXID: " />
                     <h:outputText value="#{firstStateBean.currentZNodeStat.czxid}" />
@@ -91,5 +104,33 @@
             </h:form>
         </p:layoutUnit>
     </p:layout>
+    
+    <p:dialog header="New ZNode name" showEffect="fade" hideEffect="fade" modal="true" closeOnEscape="true" draggable="false"
+        visible="false" widgetVar="newZNodeDialog">
+        
+        <h:form id="newZNodeForm">
+            
+            <p:panelGrid columns="2">
+                
+                <p:outputLabel for="newZNodeNameInputText" value="Name: " />
+                <p:inputText id="newZNodeNameInputText" value="#{firstStateBean.newZNodeName}" size="60" />
+                
+                <p:outputLabel for="newZNodeDataStringInputText" value="Data: " />
+                <p:inputTextarea id="newZNodeDataStringInputText" value="#{firstStateBean.newZNodeDataString}"  cols="60" rows="4" />
+                
+                <p:outputLabel for="newZNodeDataCharset" value="Data Charset: " />
+                <p:selectOneMenu id="newZNodeDataCharset" value="#{firstStateBean.selectedCharsetString}">
+                    <f:selectItems value="#{firstStateBean.availableCharsets}" var="currentCharsetDTO"
+                        itemLabel="#{currentCharsetDTO.displayName}" itemValue="#{currentCharsetDTO.name}" />
+                </p:selectOneMenu>
+                
+                <f:facet name="footer">
+                    <p:commandButton value="Create" actionListener="#{firstStateBean.createNewNode}" update="@form" />
+                </f:facet>
+            </p:panelGrid>
+            
+        </h:form>
+    </p:dialog>
+    
 </h:body>
 </html>

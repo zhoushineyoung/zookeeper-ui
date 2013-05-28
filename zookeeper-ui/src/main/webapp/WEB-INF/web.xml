@@ -34,6 +34,12 @@
         <param-value>bootstrap</param-value>
     </context-param>
     
+    <!-- Delete JSF Comments -->
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
     <!-- Spring Context Loader Listener -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
