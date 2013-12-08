@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ro.tatacalu.zookeeper-ui</groupId>
     <artifactId>zookeeper-ui</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>ZooKeeper UI</name>
     <description>Web UI for Apache ZooKeeper using PrimeFaces.</description>
