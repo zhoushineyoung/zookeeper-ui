@@ -18,11 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import ro.tatacalu.zookeeperui.web.dtos.ZooKeeperInstanceDTO;
 
-import com.netflix.curator.CuratorZookeeperClient;
-import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.framework.CuratorFrameworkFactory;
-import com.netflix.curator.framework.CuratorFrameworkFactory.Builder;
-
 /**
  * @author Tata Calu
  *

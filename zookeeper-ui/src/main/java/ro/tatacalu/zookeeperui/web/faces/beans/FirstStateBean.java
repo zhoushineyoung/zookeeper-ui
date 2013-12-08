@@ -17,6 +17,11 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang3.CharSetUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.OpResult;
+import org.apache.zookeeper.OpResult.SetDataResult;
+import org.apache.zookeeper.Transaction;
+import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 import org.primefaces.event.NodeCollapseEvent;
@@ -35,9 +40,6 @@ import ro.tatacalu.zookeeperui.web.dtos.CharsetDTO;
 import ro.tatacalu.zookeeperui.web.dtos.ZNodeDTO;
 import ro.tatacalu.zookeeperui.web.dtos.ZNodeStatDTO;
 
-import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.framework.api.transaction.CuratorTransactionResult;
-
 /**
  * @author Matei
  *
@@ -48,8 +50,10 @@ public class FirstStateBean {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FirstStateBean.class);
 	
+	private static final boolean BOOLEAN_GET_CHILDREN_WATCH = false;
+	
 	@Resource
-	private CuratorFramework curatorFramework;
+	private ZooKeeper zooKeeper;
 	
 	private TreeNode rootTreeNode;
 	
@@ -172,7 +176,7 @@ public class FirstStateBean {
 		this.currentZNodeData = this.getZNodeDataString(selectedZNodeDTO);
 		
 		// read the Stat
-		Stat stat = this.curatorFramework.checkExists().forPath(selectedZNodeDTO.getPath());
+		Stat stat = this.zooKeeper.exists(selectedZNodeDTO.getPath(), false);
 		this.currentZNodeStat = new ZNodeStatDTO(stat);
 		LOGGER.debug("Stat: {}", currentZNodeStat);
 	}
@@ -191,7 +195,7 @@ public class FirstStateBean {
 		
 		List<ZNodeDTO> ret = new ArrayList<ZNodeDTO>();
 		
-		List<String> rootChildren = this.curatorFramework.getChildren().forPath(path);
+		List<String> rootChildren = this.zooKeeper.getChildren(path, BOOLEAN_GET_CHILDREN_WATCH);
 		for (String currentChild: rootChildren) {
 			StringBuilder sb = new StringBuilder(path);
 			if (!(path.equals("/"))) {
@@ -244,25 +248,15 @@ public class FirstStateBean {
 		ZNodeStatDTO ret = null;
 		
 		try {
-			Collection<CuratorTransactionResult> results = this.curatorFramework
-				.inTransaction()
-				.setData().forPath(zNodeDTO.getPath(), data.getBytes())
-				.and()
-				.commit();
-			
-			if (results.size() == NumberUtils.INTEGER_ONE) {
-				CuratorTransactionResult curatorTransactionResult = results.iterator().next();
-				
-				ret = new ZNodeStatDTO(curatorTransactionResult.getResultStat());
-				
-				LOGGER.debug("Transaction result: forPath={}, resultPath={}, resultStat={}, resultType={}", 
-						curatorTransactionResult.getForPath(),
-						curatorTransactionResult.getResultPath(),
-						ret,
-						curatorTransactionResult.getType());
-			} else {
-				LOGGER.error("Multiple CuratorTransactionResult objects returned by the setData operation!");
-			}
+		    String path = zNodeDTO.getPath();
+		    
+		    Stat statExists = this.zooKeeper.exists(path, false);
+		    LOGGER.debug("Stat before: {}", statExists);
+		    
+		    Stat statSetData = this.zooKeeper.setData(zNodeDTO.getPath(), data.getBytes(), statExists.getVersion());
+		    LOGGER.debug("Stat after: {}", statSetData);
+		    
+		    ret = new ZNodeStatDTO(statSetData);
 		} catch (Exception e) {
 			LOGGER.error("Error trying to update the znode", e);
 		}
@@ -285,7 +279,8 @@ public class FirstStateBean {
 		String ret = null;
 		
 		try {
-			byte[] data = this.curatorFramework.getData().forPath(zNodeDTO.getPath());
+		    Stat stat = null;
+		    byte[] data = this.zooKeeper.getData(zNodeDTO.getPath(), false, stat);
 			ret = new String(data, this.getSelectedCharset());
 			
 //			List<ACL> aclList = this.curatorFramework.getACL().forPath(zNodeDTO.getPath());
@@ -327,17 +322,15 @@ public class FirstStateBean {
 			
 			LOGGER.debug("New ZNode path: {}; Charset: {}", newZNodePath, charset);
 			
-			Collection<CuratorTransactionResult> results = this.curatorFramework.inTransaction().create()
-				.forPath(newZNodePath, this.newZNodeDataString.getBytes(charset))
-				.and()
-				.commit();
+			List<ACL> acl = null;
 			
-			for (CuratorTransactionResult curatorTransactionResult : results) {
-				LOGGER.debug("Transaction result: forPath={}, resultPath={}, resultStat={}, resultType={}", 
-						curatorTransactionResult.getForPath(),
-						curatorTransactionResult.getResultPath(),
-						curatorTransactionResult.getResultStat(),
-						curatorTransactionResult.getType());
+			Transaction transaction = this.zooKeeper.transaction();
+			transaction.create(newZNodePath, this.newZNodeDataString.getBytes(charset), acl, CreateMode.PERSISTENT);
+			List<OpResult> opResultList = transaction.commit();
+			
+			// TODO moar!!!
+			for (OpResult opResult : opResultList) {
+			    LOGGER.debug("OpResult: {}", opResult);
 			}
 			
 			// clean up
