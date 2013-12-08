@@ -16,6 +16,7 @@
     <properties>
         <version.zookeeper>3.4.5</version.zookeeper>
         <version.spring.framework>3.2.3.RELEASE</version.spring.framework>
+        <version.jsf.api>2.2</version.jsf.api>
         <version.jsf.mojarra>2.2.4</version.jsf.mojarra>
         <version.jstl>1.2</version.jstl>
         <version.primefaces>4.0</version.primefaces>
@@ -129,9 +130,9 @@
             
             <!-- START JSF Dependencies -->
             <dependency>
-                <groupId>com.sun.faces</groupId>
-                <artifactId>jsf-api</artifactId>
-                <version>${version.jsf.mojarra}</version>
+                <groupId>javax.faces</groupId>
+                <artifactId>javax.faces-api</artifactId>
+                <version>${version.jsf.api}</version>
             </dependency>
             
             <dependency>
@@ -226,8 +227,8 @@
         
         <!-- START JSF Dependencies -->
         <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-api</artifactId>
+            <groupId>javax.faces</groupId>
+            <artifactId>javax.faces-api</artifactId>
         </dependency>
         
         <dependency>
