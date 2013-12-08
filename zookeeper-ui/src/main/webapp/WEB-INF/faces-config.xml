@@ -6,7 +6,7 @@
     
     <application>
         <!-- Spring Framework EL Resolver -->
-        <!-- <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver> -->
+        <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
         
         <!-- START I18N -->
         <locale-config>
