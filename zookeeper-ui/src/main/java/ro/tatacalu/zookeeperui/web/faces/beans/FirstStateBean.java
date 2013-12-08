@@ -398,6 +398,13 @@ public class FirstStateBean {
 	}
 
 	/**
+     * @param currentZNodeData the currentZNodeData to set
+     */
+    public void setCurrentZNodeData(String currentZNodeData) {
+        this.currentZNodeData = currentZNodeData;
+    }
+
+    /**
 	 * @return the currentZNodeStatDTO
 	 */
 	public ZNodeStatDTO getCurrentZNodeStat() {
