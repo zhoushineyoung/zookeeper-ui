@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
     <title>
+        <h:outputText value="INDEX " />
         <h:outputText value="#{messages['splashPage.htmlTitle']}" />
     </title>
 </h:head>
@@ -20,7 +21,9 @@
         <h:outputText value="#{messages['splashPage.welcomeText']}" />
     </h:panelGroup>
     
+    <h:panelGroup layout="block">
         <h:outputText value="#{messages['splashPage.instanceListDataTable.title']}" />
+        <p:dataTable var="currentZkInstance" value="#{splashPageBean.instances}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Hostname" />
@@ -29,6 +32,8 @@
             </p:column>
             <p:column>
                 <f:facet name="header">
+                    <h:outputText value="Port" />
+                </f:facet>
                 <h:outputText value="#{currentZkInstance.port}" />
             </p:column>
             <p:column>

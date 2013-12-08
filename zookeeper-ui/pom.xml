@@ -17,9 +17,9 @@
         <version.curator>1.3.3</version.curator>
         <version.spring.framework>3.2.3.RELEASE</version.spring.framework>
         <version.spring.webflow>2.3.2.RELEASE</version.spring.webflow>
-        <version.jsf.mojarra>2.1.14</version.jsf.mojarra>
+        <version.jsf.mojarra>2.2.4</version.jsf.mojarra>
         <version.jstl>1.2</version.jstl>
-        <version.primefaces>3.5</version.primefaces>
+        <version.primefaces>4.0</version.primefaces>
         <version.primefaces.themes>1.0.10</version.primefaces.themes>
         <version.servlet.api>3.0.1</version.servlet.api>
         <version.slf4j>1.7.5</version.slf4j>
@@ -27,7 +27,7 @@
         <version.apache.commons.lang3>3.1</version.apache.commons.lang3>
         <version.junit>4.11</version.junit>
         
-        <version.maven.tomcat.plugin>2.1</version.maven.tomcat.plugin>
+        <version.maven.tomcat.plugin>2.2</version.maven.tomcat.plugin>
         <version.maven.release.plugin>2.4</version.maven.release.plugin>
         <version.maven.war.plugin>2.3</version.maven.war.plugin>
         <version.maven.scm.plugin>1.8.1</version.maven.scm.plugin>
@@ -345,36 +345,9 @@
             <!-- START Apache Tomcat Maven Plugins -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat6-maven-plugin</artifactId>
-                <configuration>
-                    <!-- The full URL of the Tomcat manager instance to use. -->
-                    <url>http://192.168.1.45:8080/manager</url>
-                    
-                    <!-- The server id in settings.xml to use when authenticating with 
-                         Tomcat manager, or null to use defaults of username admin and 
-                         no password. -->
-                    <server>Tomcat1CentS59</server>
-                    
-                    <!-- The webapp context path to use for the web application being 
-                         run. This must always start with a forward-slash ('/'). -->
-                    <path>/zkui</path>
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <configuration>
-                    <!-- The full URL of the Tomcat manager instance to use. -->
-                    <url>http://192.168.1.45:8080/manager</url>
-                    
-                    <!-- The server id in settings.xml to use when authenticating with 
-                         Tomcat manager, or null to use defaults of username admin and 
-                         no password. -->
-                    <server>Tomcat1CentS59</server>
-                    
-                    <!-- The webapp context path to use for the web application being 
-                         run. This must always start with a forward-slash ('/'). -->
+                    <port>9090</port>
                     <path>/zkui</path>
                 </configuration>
             </plugin>
